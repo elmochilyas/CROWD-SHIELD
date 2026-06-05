@@ -1,4 +1,4 @@
-# CrowdGuard 🏟️
+# CROWD SHIELD 🏟️
 > Early riot and crowd disturbance detection for stadium zones
 > Built for the Football Tech Morocco Hackathon
 
