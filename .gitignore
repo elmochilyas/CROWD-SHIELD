@@ -1,0 +1,27 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# YOLOv8 weights (large binary files, auto-downloaded on first run)
+*.pt
+*.onnx
+
+# Videos (too large for git)
+videos/
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Outputs
+*.mp4
+*.avi
