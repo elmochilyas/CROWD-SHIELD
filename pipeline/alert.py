@@ -12,6 +12,7 @@ class AlertEngine:
         self._label_history: deque = deque(maxlen=3)
         self._current_label: str = "CALM"
         self.score_log: list[float] = []
+        self._frames_above_warning = 0
 
     def classify(
         self,
@@ -50,14 +51,23 @@ class AlertEngine:
             else:
                 raw_label = "CRITICAL"
 
-        # Step 5 — Hysteresis
+        # Step 5 — Persistence: require sustained WARNING+ before allowing CRITICAL
+        if raw_label in ("WARNING", "CRITICAL"):
+            self._frames_above_warning += 1
+        else:
+            self._frames_above_warning = max(0, self._frames_above_warning - 2)
+
+        if raw_label == "CRITICAL" and self._frames_above_warning < config.CRITICAL_PERSISTENCE_FRAMES:
+            raw_label = "WARNING"
+
+        # Step 6 — Hysteresis
         self._label_history.append(raw_label)
         counts = Counter(self._label_history)
         top_label, top_count = counts.most_common(1)[0]
         if top_count >= 3:
             self._current_label = top_label
 
-        # Step 6 — Log and return
+        # Step 7 — Log and return
         self.score_log.append(smoothed_score)
         high_risk_count = sum(
             1 for p in person_states if p.risk_score >= config.THRESH_HIGH
@@ -78,3 +88,4 @@ class AlertEngine:
         self._label_history.clear()
         self._current_label = "CALM"
         self.score_log.clear()
+        self._frames_above_warning = 0

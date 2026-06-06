@@ -31,8 +31,7 @@ class Renderer:
                 label_text += " [OBJ]"
 
             (label_w, label_h), baseline = cv2.getTextSize(
-                label_text, config.LABEL_FONT, config.LABEL_FONT_SCALE,
-                config.LABEL_FONT_THICK
+                label_text, config.LABEL_FONT, 0.5, 1
             )
             label_y1 = bbox.y1 - label_h - 6
             label_x1 = bbox.x1
@@ -48,8 +47,8 @@ class Renderer:
             cv2.putText(
                 out, label_text,
                 (label_x1 + 4, label_y1 + label_h + 2),
-                config.LABEL_FONT, config.LABEL_FONT_SCALE,
-                (255, 255, 255), config.LABEL_FONT_THICK, cv2.LINE_AA,
+                config.LABEL_FONT, 0.5,
+                (255, 255, 255), 1, cv2.LINE_AA,
             )
 
         # Layer 2 — Danger object boxes
@@ -92,6 +91,11 @@ class Renderer:
         zone_text = zone_cfg["text"]
         zone_color = zone_cfg["color"]
 
+        # Colored accent line below HUD
+        cv2.line(out, (0, config.HUD_HEIGHT_PX),
+                 (w, config.HUD_HEIGHT_PX),
+                 zone_color, 3)
+
         (tw, th), _ = cv2.getTextSize(zone_text, config.HUD_FONT,
                                        config.HUD_FONT_SCALE,
                                        config.HUD_FONT_THICKNESS)
@@ -102,8 +106,8 @@ class Renderer:
                     zone_color, config.HUD_FONT_THICKNESS, cv2.LINE_AA)
 
         info_text = (
-            f"Score: {zone_state.zone_score:.2f}   "
-            f"Risk persons: {zone_state.high_risk_count}"
+            f"Tracking: {len(person_states)} persons   "
+            f"High risk: {zone_state.high_risk_count}"
         )
         (iw, ih), _ = cv2.getTextSize(info_text, config.LABEL_FONT,
                                        0.7, 1)

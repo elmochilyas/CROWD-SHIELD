@@ -152,7 +152,7 @@ class BehaviorEngine:
         if raised == 0:
             return 0.0
         elif raised == 1:
-            return 0.5
+            return 0.0
         else:
             return 1.0
 
